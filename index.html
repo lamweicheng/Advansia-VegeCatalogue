@@ -1,0 +1,362 @@
+<!doctype html>
+<head>
+<script type="text/javascript" src="extras/jquery.min.1.7.js"></script>
+<script type="text/javascript" src="extras/jquery-ui-1.8.20.custom.min.js"></script>
+<script type="text/javascript" src="extras/jquery.mousewheel.min.js"></script>
+<script type="text/javascript" src="extras/modernizr.2.5.3.min.js"></script>
+<script type="text/javascript" src="lib/hash.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+</head>
+
+<style>
+.zoom-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 99;
+}
+
+.zoom-button {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 3px;
+    font-size: 18px;
+	 width: 36px; /* Fixed width */
+    height: 36px; /* Fixed height */
+    display: flex; /* Added to align content both horizontally and vertically */
+    align-items: center; /* Align content vertically */
+    justify-content: center; /* Align content horizontally */
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+
+</style>
+
+<body>
+	<div class="zoom-controls">
+		<button id="zoomIn" class="zoom-button">+</button>
+		<button id="zoomOut" class="zoom-button">-</button>
+  </div>
+  
+  
+
+	<div id="canvas">
+		
+		<div id="book-zoom" class="Advansia-Docs">
+			
+					<div ignore="1" class="tabs">
+						<div 
+							class="left">  
+						</div> 
+					<div 
+						class="right"> 
+					</div>
+			</div>
+		</div>
+	</div>
+	
+
+	<div class="slider-footer-wrapper">
+		<div class="arrow left-arrow-mobile">&larr;</div> <!-- New mobile arrow -->
+		<div id="slider-container">
+			<div class="arrow left-arrow">&larr;</div>
+			
+				<div id="slider-bar" class="turnjs-slider">
+					<div id="slider"></div>
+				</div>
+			<div class="arrow right-arrow">&rarr;</div>
+			
+		</div>
+		<div class="arrow right-arrow-mobile">&rarr;</div> <!-- New mobile arrow -->
+	
+		<div class="footer">
+			<p>Copyright© 2023 - All Rights Reserved</p>
+			<p><a href="https://www.advansia.com" target="_blank" rel="noopener noreferrer">www.advansia.com</a></p>
+		</div>
+	</div>
+	
+	<button id="openModal" class="info-button">The Creator</button>
+	
+	<div id="infoModal" class="modal">
+	 	<div class="modal-content">
+			<div class="modal-header">
+				<span id="closeModal" class="close">&times;</span>
+				<h4 class="modal-title"> Anderson Lam Wei Cheng</h4>
+			</div>
+		<div class="modal-body">
+		  <p> 👋  Undergraduate Junior at UC Berkeley | Electrical Engineering and Computer Sciences - Entrepreneurship and Technology.</p>
+			<p> 👀  I am passionate about building and designing hardware equipment to solve world problems for our society, especially in the agricultural industry. </p>
+			<p> 👀  I particularly interested in UAVs, Precision Agriculture, Machine Learning, Database and Business Marketing.</p>
+			<p> 📫  My Linkedin: <a href="https://www.linkedin.com/in/weichenglam/" target="_blank" rel="noopener noreferrer">https://www.linkedin.com/in/weichenglam/</a></p>
+			<p> 📖  My Personal Portfolio: <a href="https://www.andersonlam.info/" target="_blank" rel="noopener noreferrer">https://www.andersonlam.info/</a></p>
+			<br> </br>
+			<br> </br>
+			<p> Please report any issues here: <a href="mailto:lamweicheng@berkeley.edu">lamweicheng@berkeley.edu</a> </p>
+		</div>
+	</div>
+
+	
+	
+  
+
+
+
+<script type="text/javascript">
+	
+
+function loadApp() {
+
+	var flipbook = $('.Advansia-Docs');
+
+	if (flipbook.width()==0 || flipbook.height()==0) {
+		setTimeout(loadApp, 10);
+		return;
+	}
+
+	$("#zoomIn").on("click", function() {
+        zoom(1.1);
+    });
+
+    // Add click event listener for the zoom out button
+    $("#zoomOut").on("click", function() {
+        zoom(1 / 1.1);
+    });
+
+	 
+
+	//Slider
+	$( "#slider" ).slider({
+		min: 1,
+		max: 100,
+
+		start: function(event, ui) {
+			if (!window._thumbPreview) {
+				_thumbPreview = $('<div />', {'class': 'thumbnail'}).html('<div></div>');
+				setPreview(ui.value);
+				_thumbPreview.appendTo($(ui.handle));
+			} else
+				setPreview(ui.value);
+			moveBar(false);
+		},
+
+		slide: function(event, ui) {
+			setPreview(ui.value);
+		},
+
+		stop: function() {
+			if (window._thumbPreview)
+				_thumbPreview.removeClass('show');
+			
+			$('.Advansia-Docs').turn('page', Math.max(1, $(this).slider('value')*2 - 2));
+		}
+	});
+
+	//Arrows for navigating 
+
+	$(document).ready(function() {
+    // Add click event listener for the left arrow
+		$(".left-arrow").on("click", function() {
+			$(".Advansia-Docs").turn("previous");
+		});
+
+		// Add click event listener for the right arrow
+		$(".right-arrow").on("click", function() {
+			$(".Advansia-Docs").turn("next");
+		});
+
+		 // Add click event listener for the left mobile arrow
+		 $(".left-arrow-mobile").on("click", function() {
+			$(".Advansia-Docs").turn("previous");
+		});
+
+		// Add click event listener for the right mobile arrow
+		$(".right-arrow-mobile").on("click", function() {
+			$(".Advansia-Docs").turn("next");
+		});
+	});
+
+
+
+	// URIs
+	Hash.on('^page\/([0-9]*)$', {
+		yep: function(path, parts) {
+			var page = parts[1];
+			if (page!==undefined) {
+				if ($('.Advansia-Docs').turn('is'))
+					$('.Advansia-Docs').turn('page', page);
+			}
+		},
+		nop: function(path) {
+			if ($('.Advansia-Docs').turn('is'))
+				$('.Advansia-Docs').turn('page', 1);
+		}
+	});
+
+	// Arrows
+	$(document).keydown(function(e){
+
+		var previous = 37, next = 39;
+		switch (e.keyCode) {
+			case previous:
+				$('.Advansia-Docs').turn('previous');
+			break;
+			case next:
+				$('.Advansia-Docs').turn('next');
+			break;
+		}
+	});
+
+	// Create the flipbook
+	flipbook.turn({
+		elevation: 50,
+		acceleration: false,
+		gradients: true,
+		autoCenter: true,
+		duration: 1000,
+		pages: 28, //total page for the catalog
+		when: {
+
+		turning: function(e, page, view) {
+			
+			var book = $(this),
+			currentPage = book.turn('page'),
+			pages = book.turn('pages');
+				
+			if (currentPage>3 && currentPage<pages-3) {
+				if (page==1) {
+					book.turn('page', 2).turn('stop').turn('page', page);
+					e.preventDefault();
+					return;
+				} else if (page==pages) {
+					book.turn('page', pages-1).turn('stop').turn('page', page);
+					e.preventDefault();
+					return;
+				}
+			} else if (page>3 && page<pages-3) {
+				if (currentPage==1) {
+					book.turn('page', 2).turn('stop').turn('page', page);
+					e.preventDefault();
+					return;
+				} else if (currentPage==pages) {
+					book.turn('page', pages-1).turn('stop').turn('page', page);
+					e.preventDefault();
+					return;
+				}
+			}
+
+			Hash.go('page/'+page).update();
+
+			if (page==1 || page==pages)
+				$('.Advansia-Docs .tabs').hide();
+			
+
+		},
+
+		turned: function(e, page, view) {
+
+			var book = $(this);
+
+			$('#slider').slider('value', getViewNumber(book, page));
+
+			if (page!=1 && page!=book.turn('pages'))
+				$('.Advansia-Docs .tabs').fadeIn(500);
+			else
+				$('.Advansia-Docs .tabs').hide();
+
+			book.turn('center');
+
+		},
+
+		start: function(e, pageObj) {
+			moveBar(true);
+		},
+
+		end: function(e, pageObj) {
+		
+			var book = $(this);
+
+			setTimeout(function() {
+				$('#slider').slider('value', getViewNumber(book));
+			}, 1);
+
+			moveBar(false);
+
+		},
+
+		missing: function (e, pages) {
+    	for (var i = 0; i < pages.length; i++) {
+			if (pages[i] == 1) {
+					var img_src = "pages/1.png"; // Set the first page source
+			} else {
+					var img_src = "pages/" + pages[i] + ".png";
+			}
+			addPage(pages[i], $(this), img_src);
+    }
+	}}
+	}). turn('page', 1);
+
+	$('#slider').slider('option', 'max', numberOfViews(flipbook));
+	flipbook.addClass('animated');
+
+
+	// Show canvas
+	$('#canvas').css({visibility: 'visible'});
+}
+
+
+// Hide canvas
+
+$('#canvas').css({visibility: 'hidden'});
+
+yepnope({
+	test: Modernizr.csstransforms,
+	yep: ['lib/turn.min.js', 'css/jquery.ui.css'],
+	nope: ['lib/turn.html4.min.js', 'css/jquery.ui.html4.css'],
+	both: ['css/docs.css', 'js/docs.js'],
+	complete: loadApp
+});
+
+
+document.getElementById("openModal").onclick = function() {
+  document.getElementById("infoModal").style.display = "block";
+}
+
+document.getElementById("closeModal").onclick = function() {
+  document.getElementById("infoModal").style.display = "none";
+}
+
+document.getElementById("closeFooter").onclick = function() {
+  document.getElementById("infoModal").style.display = "none";
+}
+
+window.onclick = function(event) {
+  if (event.target == document.getElementById("infoModal")) {
+    document.getElementById("infoModal").style.display = "none";
+  }
+}
+
+$(document).ready(function() {
+    // Add click event listener for the zoom in button
+    $("#zoomIn").on("click", function() {
+        zoom(1.1);
+    });
+
+    // Add click event listener for the zoom out button
+    $("#zoomOut").on("click", function() {
+        zoom(1 / 1.1);
+    });
+});
+
+function zoom(factor) {
+    var flipbook = $("#book-zoom");
+    var currentZoom = flipbook.data("zoom") || 1;
+    var newZoom = currentZoom * factor;
+    flipbook.css("transform-origin", "center center");
+    flipbook.css("transform", "scale(" + newZoom + ")");
+    flipbook.data("zoom", newZoom);
+}
+
+</script>
+</body>
+</html>

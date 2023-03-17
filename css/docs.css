@@ -1,0 +1,380 @@
+body{
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	display: flex; 
+	justify-content: center; 
+	align-items: center; 
+	height: calc(100vh - 20px);
+	overflow-y: scroll;
+}
+ 
+#canvas{
+	width: 1200px;
+	 height: calc(100% - 20px); 
+}
+
+.left-arrow-mobile,
+.right-arrow-mobile {
+    display: none;
+}
+
+
+.footer {
+	width: 100%;
+	background-color: rgba(249, 243, 243, 0.939); 
+	text-align: center;
+	padding: 10px;
+	z-index: 1000;
+}
+
+.footer p {
+	margin: 0;
+	padding: 0;
+	line-height: 1.5;
+}
+
+ .info-button {
+	position: fixed;
+	bottom: 13px; /* Adjust the distance from the bottom */
+	right: 20px; /* Adjust the distance from the right */
+	background-color: #1ab61a; /* Button color */
+	color: white; /* Text color */
+	padding: 10px 20px;
+	border: none;
+	cursor: pointer;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	border-radius: 4px;
+	z-index: 1000;
+}
+
+.slider-footer-wrapper {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	z-index: 1000; /* Ensures the wrapper stays on top */
+}
+
+.info-button:hover {
+	background-color: #4b87d5;
+ } 
+
+ .zoom-controls {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	z-index: 99;
+}
+
+.zoom-button {
+	background-color: #ffffff;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	font-size: 18px;
+	padding: 2px 8px;
+	margin-left: 5px;
+	cursor: pointer;
+}
+
+
+
+
+#book-zoom{
+	-webkit-transition: -webkit-transform 1s;
+	-moz-transition: -moz-transform 1s;
+	-ms-transition: -ms-transform 1s;
+	-o-transition: -o-transform 1s;
+	transition: transform 1s;
+}
+
+.animated{
+	-webkit-transition:margin-left 0.2s ease-in-out;
+	-moz-transition:margin-left 0.2s ease-in-out;
+	-o-transition:margin-left 0.2s ease-in-out;
+	-ms-transition:margin-left 0.2s ease-in-out;
+	transition:margin-left 0.2s ease-in-out;
+}
+
+.Advansia-Docs{
+	margin-top:10x;
+	width:1182px;
+	height:750px;
+}
+
+.Advansia-Docs .page{
+	width:591px;
+	height:750px;
+	background:white;
+
+	-webkit-box-shadow:0 0 20px rgba(0,0,0,0.2);
+	-moz-box-shadow:0 0 20px rgba(0,0,0,0.2);
+	-ms-box-shadow:0 0 20px rgba(0,0,0,0.2);
+	-o-box-shadow:0 0 20px rgba(0,0,0,0.2);
+	box-shadow:0 0 20px rgba(0,0,0,0.2);
+}
+
+.Advansia-Docs .even .gradient{
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background-image:url(../pics/right-border.png);
+	background-position:right top;
+	background-repeat: repeat-y;
+}
+
+.Advansia-Docs .odd .gradient{
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background-image:url(../pics/left-border.png);
+	background-position:left top;
+	background-repeat: repeat-y;
+}
+
+.Advansia-Docs .page-wrapper{
+	-webkit-perspective:2000px;
+	-moz-perspective: 2000px;
+	-ms-perspective: 2000px;
+	perspective: 2000px;
+}
+
+
+.Advansia-Docs .loader{
+	background-image:url(../pics/loader.gif);
+	width:22px;
+	height:22px;
+	position:absolute;
+	top:280px;
+	left:219px;
+}
+
+.Advansia-Docs .shadow{
+	-webkit-transition: -webkit-box-shadow 0.5s;
+	-moz-transition: -moz-box-shadow 0.5s;
+	-o-transition: -webkit-box-shadow 0.5s;
+	-ms-transition: -ms-box-shadow 0.5s;
+
+	-webkit-box-shadow:0 0 20px #ccc;
+	-moz-box-shadow:0 0 20px #ccc;
+	-o-box-shadow:0 0 20px #ccc;
+	-ms-box-shadow:0 0 20px #ccc;
+	box-shadow:0 0 20px #ccc;
+}
+
+#slider-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#slider-container  .arrow {
+	font-size: 3em;
+	color: #333;
+	cursor: pointer;
+	user-select: none;
+	line-height: 1; 
+	margin: 0 5px;
+}
+
+.Advansia-Docs .slider-bar {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 40px; 
+}
+
+#slider-container .left-arrow {
+	margin-right: 10px;
+}
+
+#slider-container.right-arrow {
+	margin-left: 10px;
+}
+
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 1000;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.5);
+ }
+ 
+ .modal-content {
+	background-color: #fff;
+	margin: 15% auto;
+	padding: 20px;
+	border: 1px solid #888;
+	width: 80%;
+ }
+
+ .modal-title {
+	text-align: center;
+	font-size: 24px; /* Adjust this value according to your preference */
+ }
+ 
+ .close {
+	color: #aaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+ }
+ 
+ .close:hover,
+ .close:focus {
+	color: #000;
+	text-decoration: none;
+	cursor: pointer;
+ }
+
+/* For iphone 14 pro max screen size */
+ @media screen and (max-width: 1284px) and (min-width: 1125px) {
+	#canvas {
+		 width: 100vw;
+		 height: 50vh; /* Change this to 100vh to better fit the screen */
+	}
+
+	.Advansia-Docs {
+		 width: 100vw;
+		 height: 50vh; /* Change this to 100vh to better fit the screen */
+	}
+
+	.Advansia-Docs .page {
+		 width: 90%; /* Change this from the fixed width to a percentage value */
+	}
+
+	.footer {
+		 padding: 10px; /* Reduce the padding on mobile devices */
+		 font-size: 12px; /* Reduce the font size on mobile devices */
+	}
+
+
+	.info-button {
+		font-size: 6px; /* Adjust the font size for mobile */
+		padding: 6px 10px; /* Adjust the button padding for mobile */
+  }	
+  .Advansia-Docs .slider-bar {
+	display: none;
+
+}
+}
+
+/* For iphone X screen size */
+@media screen and (max-width: 1125px) and (min-width: 828px) {
+	#canvas {
+		 width: 100vw;
+		 height: 50vh; /* Change this to 100vh to better fit the screen */
+	}
+
+	.Advansia-Docs {
+		 width: 100vw;
+		 height: 50vh; /* Change this to 100vh to better fit the screen */
+	}
+
+	.Advansia-Docs .page {
+		 width: 90%; /* Change this from the fixed width to a percentage value */
+	}
+
+	.footer {
+		 padding: 12px; /* Reduce the padding on mobile devices */
+		 font-size: 12px; /* Reduce the font size on mobile devices */
+	}
+
+
+	.info-button {
+		font-size: 6px; /* Adjust the font size for mobile */
+		padding: 5px 5px; /* Adjust the button padding for mobile */
+  }	
+  
+  .Advansia-Docs .slider-bar {
+	display: none;
+}
+}
+
+/* For mobile devices */
+@media screen and (max-width: 767px) {
+	#canvas {
+		 width: 100vw;
+		 height: 80vh;
+	}
+
+	.Advansia-Docs {
+		 width: 100vw;
+		 height: 50vh;
+	}
+
+	.Advansia-Docs .page {
+		 width: 50%; /* Adjust the width to 90% for mobile devices */
+	}
+
+	.footer {
+		 position: relative; /* Make the footer a relative container */
+		 z-index: 10; /* Make sure the footer is above other elements */
+		 padding: 12px;
+		 font-size: 12px;
+		 bottom: 0;
+	}
+
+	.info-button {
+		 font-size: 6px;
+		 padding: 5px 5px;
+	}
+
+	.left-arrow,
+	.right-arrow {
+		 display: none;
+	}
+
+	/* Show and position mobile arrows */
+	.left-arrow-mobile,
+	.right-arrow-mobile {
+		 display: block;
+		 position: absolute;
+		 font-size: 24px;
+		 bottom: 80px; /* Adjust to position arrows above the footer */
+		 z-index: 11;
+	}
+
+	.left-arrow-mobile {
+		 left: 20%;
+	}
+
+	.right-arrow-mobile {
+		 right: 20%;
+	}
+
+	#slider-container {
+		 display: none; /* Hide the slider container */
+	}
+
+	.zoom-controls {
+		 display: flex;
+		 flex-direction: row;
+	}
+
+	.zoom-button {
+		 background-color: #ffffff;
+		 border: 1px solid #cccccc;
+		 border-radius: 3px;
+		 font-size: 18px;
+		 width: 30px; /* Fixed width */
+		 height: 30px; /* Fixed height */
+		 display: flex; /* Added to align content both horizontally and vertically */
+		 align-items: center; /* Align content vertically */
+		 justify-content: center; /* Align content horizontally */
+		 margin-left: 10px;
+		 cursor: pointer;
+	}
+}
